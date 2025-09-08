@@ -42,24 +42,38 @@ string intToBin(int num) {
     return result;
 }
 
-// int createFile(string filename) {
-//     ofstream outputFile(filename);
-//     if (!outputFile.is_open()) return -1;
-//
-//     outputFile.close();
-//     return 0;
-// }
-
-int inputNums(string filename) {
+int createFile(string filename) {
     ofstream outputFile(filename);
     if (!outputFile.is_open()) return -1;
 
+    int numbers[10] = {-1, 2, 32, 4968, -52, 64, 71, 89, -91, 102};
+    int choice;
     string line;
-    cout << "Please enter a number (to complete, enter exit):" << endl;
-    while (true) {
+
+    cout << "1 - template numbers, 2 - input numbers " << endl;
+    cin >> choice;
+
+    if (choice == 1) {
+        for (int i = 0; i < 10; i++) {
+            outputFile << numbers[i] << endl;
+        }
+    }
+    else if (choice == 2) {
+        cout << "Enter exit to stop" << endl;
         cin >> line;
-        if (line == "exit") break;
-        outputFile << line << endl;
+        while (line != "exit") {
+            outputFile << line << endl;
+            cin >> line;
+        }
+    }
+    else {
+        outputFile.close();
+        return -1;
+    }
+
+    if (outputFile.fail()) {
+        outputFile.close();
+        return -1;
     }
     outputFile.close();
     return 0;
@@ -73,6 +87,12 @@ int displayFile(string filename) {
     while (inputFile >> num) {
         cout << num << endl;
     }
+
+    if (inputFile.fail()) {
+        inputFile.close();
+        return -1;
+    }
+    inputFile.close();
     return 0;
 }
 
@@ -81,6 +101,11 @@ int insertNum(string filename, int num) {
     if (!outputFile.is_open()) return -1;
 
     outputFile << num << endl;
+
+    if (outputFile.fail()) {
+        outputFile.close();
+        return -1;
+    }
     outputFile.close();
     return 0;
 }
@@ -94,8 +119,18 @@ int getAmount(string filename) {
     while (inputFile >> number) {
         count++;
     }
+
+    if (inputFile.fail()) {
+        inputFile.close();
+        return -1;
+    }
+
+    if (inputFile.fail()) {
+        inputFile.close();
+        return -1;
+    }
     inputFile.close();
-    return count;
+    return 0;
 }
 
 int getByIndex(string filename, int index) {
@@ -108,12 +143,20 @@ int getByIndex(string filename, int index) {
     int currentIndex = 0;
     while (inputFile >> num) {
         if (index == currentIndex) {
+            if (inputFile.fail()) {
+                inputFile.close();
+                return -1;
+            }
             inputFile.close();
             return num;
         }
         currentIndex++;
     }
 
+    if (inputFile.fail()) {
+        inputFile.close();
+        return -1;
+    }
     inputFile.close();
     return -1;
 }
@@ -147,108 +190,93 @@ int processAllNumbers(string inputFilename, string outputFilename, int pos) {
     cout << "Processed numbers: " << counter << endl;
     cout << "Results recorded to: " << outputFilename << endl;
 
+    if (inputFile.fail()) {
+        inputFile.close();
+        return -1;
+    }
     inputFile.close();
+    if (outputFile.fail()) {
+        outputFile.close();
+        return -1;
+    }
     outputFile.close();
     return 0;
 }
 
-void printMenu() {
-    cout << endl << "=== Menu ===" << endl;
-    cout << "1. Create new file" << endl;
-    cout << "2. Insert number" << endl;
-    cout << "3. Display numbers" << endl;
-    cout << "4. Get the number from file by index" << endl;
-    cout << "5. Get the amount of numbers" << endl;
-    cout << "6. Process all numbers with func(1-5)" << endl;
-    cout << "7. Help" << endl;
-    cout << "8. Exit" << endl;
-}
-
-string getFileNameFromUser() {
-    string filename;
-    cout << "Please enter a file name:" << endl;
-    cin >> filename;
-    return filename;
-}
-
-void createFileUI() {
-    string filename = getFileNameFromUser();
-    int result = inputNums(filename);
-    if (result == 0) cout << "Successfully created file." << endl;
-    else cout << "Failed to create file." << endl;
-}
-
-void insertNumUI() {
-    string filename = getFileNameFromUser();
-    int num;
-    cout << " Please enter a number:" << endl;
-    cin >> num;
-
-    int result = insertNum(filename, num);
-    if (result == 0) cout << "Successfully inserted number." << endl;
-    else cout << "Failed to insert number." << endl;
-}
-
-void displayFileUI() {
-    string filename = getFileNameFromUser();
-
-    int result = displayFile(filename);
-    if (result == 0) cout << "Successfully displayed file." << endl;
-    else cout << "Failed to display file." << endl;
-}
-
-void getByIndexUI() {
-    string filename = getFileNameFromUser();
-    int index;
-    cout << " Please enter a number:" << endl;
-    cin >> index;
-
-    int result = getByIndex(filename, index);
-    if (result == -1) cout << "Failed to get number from file." << endl;
-    else cout << "Num by index [" << index << "] = " << result << endl;
-
-}
-
-void getAmountUI() {
-    string filename = getFileNameFromUser();
-
-    int result = getAmount(filename);
-    if (result != -1) cout << "Amount: " << result << endl;
-    else cout << "Failed to get amount." << endl;
-}
-
-void processAllNumsUI() {
-    cout << "Input filename to process - ";
-    string inputFilename = getFileNameFromUser();
-    cout << "Output filename to process - ";
-    string outputFilename = getFileNameFromUser();
-    int pos;
-    cout << " Please enter a number:" << endl;
-    cin >> pos;
-
-    int result = processAllNumbers(inputFilename, outputFilename, pos);
-    if (result == 0) cout << "Successfully processed numbers." << endl;
-    else cout << "Failed to process numbers." << endl;
-}
 
 int main() {
-    int choice;
+    string inputFilename = "../test.txt";
+    string outputFilename = "../testOutput.txt";
+    int insertableNumber = 14;
+    int pos = 8;
+    int result;
 
-    printMenu();
-    while (true) {
-        cout << endl << "Enter your choice: ";
-        cin >> choice;
+    cout << "\n=== Test all bit functions ===" << endl;
+    cout << "Testing func1-5 with sample number 42:" << endl;
+    int testNum = 42;
+    // ДОБАВИТЬ ОЖИДАЕМОЕ(ПРОРЕШАТЬ САМОМУ);
+    cout << "Original: " << testNum << " bin: " << intToBin(testNum) << endl;
+    cout << "func1: " << func1(testNum) << " bin: " << intToBin(func1(testNum)) << endl;
+    cout << "func2: " << func2(testNum) << " bin: " << intToBin(func2(testNum)) << endl;
+    cout << "func3: " << func3(testNum) << " bin: " << intToBin(func3(testNum)) << endl;
+    cout << "func4: " << func4(testNum) << " bin: " << intToBin(func4(testNum)) << endl;
+    cout << "func5: " << func5(testNum, pos) << " bin: " << intToBin(func5(testNum, pos)) << endl;
 
-        switch (choice) {
-            case 1: createFileUI(); break;
-            case 2: insertNumUI(); break;
-            case 3: displayFileUI(); break;
-            case 4: getByIndexUI(); break;
-            case 5: getAmountUI(); break;
-            case 6: processAllNumsUI(); break;
-            case 7: printMenu(); break;
-            case 8: cout << "Goodbye!" << endl; return 0;
-            default: cout << "Invalid choice." << endl; break;
-        }
+    cout << "\n=== Test create file === "<< endl;
+    cout << "1.3.1 Create text file" << endl;
+    result = createFile(inputFilename);
+    if (result == -1) {
+        cout << "Error create text file" << endl;
+        return -1;
     }
+
+    cout << "\n=== Test display numbers ===" << endl;
+    cout << "1.3.2 Display nums from text file" << endl;
+    result = displayFile(inputFilename);
+    if (result == -1) {
+        cout << "Error display text file" << endl;
+        return -1;
+    }
+
+
+    cout << "\n=== Test insert numbers ===" << endl;
+    cout << "1.3.3 Insert number to end of text file" << endl;
+    result = insertNum(inputFilename, insertableNumber);
+    if (result == -1) {
+        cout << "Error insert text file" << endl;
+        return -1;
+    }
+    result = displayFile(inputFilename);
+    if (result == -1) {
+        cout << "Error display changes after insert number to end of text file" << endl;
+        return -1;
+    }
+
+    cout << "\n=== Test get number from file by index ===" << endl;
+    cout << "1.3.4 Get number from text file by index" << endl;
+    result = getByIndex(inputFilename, pos);
+    if (result == -1) {
+        cout << "Error get text file" << endl;
+        cout << "getByIndex returns -1" << endl;
+    }
+    else cout << "getByIndex returns " << result << endl;
+
+    cout << "\n=== Test get amount of numbers from file ===" << endl;
+    cout << "1.3.5 Get amount of numbers from text file" << endl;
+    result = getAmount(inputFilename);
+    if (result == -1) {
+        cout << "Error get amount of numbers from text file" << endl;
+        return -1;
+    }
+
+    cout << "\n=== Test process numbers ===" << endl;
+    cout << "1.3.6 Process numbers from text file" << endl;
+    result = processAllNumbers(inputFilename, outputFilename, pos);
+    if (result == -1) {
+        cout << "Error process all numbers from text file" << endl;
+        return -1;
+    }
+
+    return 0;
+
 }
