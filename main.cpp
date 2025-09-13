@@ -42,36 +42,36 @@ string intToBin(int num) {
     return result;
 }
 
-int createFile(string filename) {
+int createAndFillFile(string filename) {
     ofstream outputFile(filename);
     if (!outputFile.is_open()) return -1;
 
     int numbers[10] = {-1, 2, 32, 4968, -52, 64, 71, 89, -91, 102};
-    int choice;
+    int choice = 1;
     string line;
-
-    cout << "1 - template numbers, 2 - input numbers " << endl;
-    cin >> choice;
+    //
+    // cout << "1 - template numbers, 2 - input numbers " << endl;
+    // cin >> choice;
 
     if (choice == 1) {
         for (int i = 0; i < 10; i++) {
             outputFile << numbers[i] << endl;
         }
     }
-    else if (choice == 2) {
-        cout << "Enter exit to stop" << endl;
-        cin >> line;
-        while (line != "exit") {
-            outputFile << line << endl;
-            cin >> line;
-        }
-    }
-    else {
-        outputFile.close();
-        return -1;
-    }
+    // else if (choice == 2) {
+    //     cout << "Enter exit to stop" << endl;
+    //     cin >> line;
+    //     while (line != "exit") {
+    //         outputFile << line << endl;
+    //         cin >> line;
+    //     }
+    // }
+    // else {
+    //     outputFile.close();
+    //     return -1;
+    // }
 
-    if (outputFile.fail()) {
+    if (outputFile.fail() && !outputFile.eof()) {
         outputFile.close();
         return -1;
     }
@@ -88,7 +88,7 @@ int displayFile(string filename) {
         cout << num << endl;
     }
 
-    if (inputFile.fail()) {
+    if (inputFile.fail() && !inputFile.eof()) {
         inputFile.close();
         return -1;
     }
@@ -102,7 +102,7 @@ int insertNum(string filename, int num) {
 
     outputFile << num << endl;
 
-    if (outputFile.fail()) {
+    if (outputFile.fail() && !outputFile.eof()) {
         outputFile.close();
         return -1;
     }
@@ -120,12 +120,12 @@ int getAmount(string filename) {
         count++;
     }
 
-    if (inputFile.fail()) {
+    if (inputFile.fail() && !inputFile.eof()) {
         inputFile.close();
         return -1;
     }
 
-    if (inputFile.fail()) {
+    if (inputFile.fail() && !inputFile.eof()) {
         inputFile.close();
         return -1;
     }
@@ -140,7 +140,7 @@ int getByIndex(string filename, int index) {
     if (!inputFile.is_open()) return -1;
 
     int num;
-    int currentIndex = 0;
+    int currentIndex = 1;
     while (inputFile >> num) {
         if (index == currentIndex) {
             if (inputFile.fail()) {
@@ -153,7 +153,7 @@ int getByIndex(string filename, int index) {
         currentIndex++;
     }
 
-    if (inputFile.fail()) {
+    if (inputFile.fail() && !inputFile.eof()) {
         inputFile.close();
         return -1;
     }
@@ -190,12 +190,12 @@ int processAllNumbers(string inputFilename, string outputFilename, int pos) {
     cout << "Processed numbers: " << counter << endl;
     cout << "Results recorded to: " << outputFilename << endl;
 
-    if (inputFile.fail()) {
+    if (inputFile.fail() && !inputFile.eof()) {
         inputFile.close();
         return -1;
     }
     inputFile.close();
-    if (outputFile.fail()) {
+    if (outputFile.fail() && !outputFile.eof()) {
         outputFile.close();
         return -1;
     }
@@ -214,7 +214,6 @@ int main() {
     cout << "\n=== Test all bit functions ===" << endl;
     cout << "Testing func1-5 with sample number 42:" << endl;
     int testNum = 42;
-    // ДОБАВИТЬ ОЖИДАЕМОЕ(ПРОРЕШАТЬ САМОМУ);
     cout << "Original: " << testNum << " bin: " << intToBin(testNum) << endl;
     cout << "func1: " << func1(testNum) << " bin: " << intToBin(func1(testNum)) << endl;
     cout << "func2: " << func2(testNum) << " bin: " << intToBin(func2(testNum)) << endl;
@@ -224,7 +223,7 @@ int main() {
 
     cout << "\n=== Test create file === "<< endl;
     cout << "1.3.1 Create text file" << endl;
-    result = createFile(inputFilename);
+    result = createAndFillFile(inputFilename);
     if (result == -1) {
         cout << "Error create text file" << endl;
         return -1;
