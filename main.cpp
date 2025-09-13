@@ -7,6 +7,11 @@ using namespace std;
 
 // Вариант 2
 
+struct Result {
+    int status;
+    int num;
+};
+
 int func1(int num) {
     return num|((0b111)<<29);
 }
@@ -133,32 +138,32 @@ int getAmount(string filename) {
     return 0;
 }
 
-int getByIndex(string filename, int index) {
-    if (index < 0) return -1;
+Result getByIndex(string filename, int index) {
+    if (index < 0) return {-1, 0};
 
     ifstream inputFile(filename);
-    if (!inputFile.is_open()) return -1;
+    if (!inputFile.is_open()) return {-1, 0};
 
     int num;
     int currentIndex = 1;
     while (inputFile >> num) {
         if (index == currentIndex) {
-            if (inputFile.fail()) {
+            if (inputFile.fail() && !inputFile.eof()) {
                 inputFile.close();
-                return -1;
+                return {-1, 0};
             }
             inputFile.close();
-            return num;
+            return {0, num};
         }
         currentIndex++;
     }
 
     if (inputFile.fail() && !inputFile.eof()) {
         inputFile.close();
-        return -1;
+        return {-1, 0};
     }
     inputFile.close();
-    return -1;
+    return {-1, 0};
 }
 
 int processAllNumbers(string inputFilename, string outputFilename, int pos) {
@@ -211,16 +216,6 @@ int main() {
     int pos = 8;
     int result;
 
-    cout << "\n=== Test all bit functions ===" << endl;
-    cout << "Testing func1-5 with sample number 42:" << endl;
-    int testNum = 42;
-    cout << "Original: " << testNum << " bin: " << intToBin(testNum) << endl;
-    cout << "func1: " << func1(testNum) << " bin: " << intToBin(func1(testNum)) << endl;
-    cout << "func2: " << func2(testNum) << " bin: " << intToBin(func2(testNum)) << endl;
-    cout << "func3: " << func3(testNum) << " bin: " << intToBin(func3(testNum)) << endl;
-    cout << "func4: " << func4(testNum) << " bin: " << intToBin(func4(testNum)) << endl;
-    cout << "func5: " << func5(testNum, pos) << " bin: " << intToBin(func5(testNum, pos)) << endl;
-
     cout << "\n=== Test create file === "<< endl;
     cout << "1.3.1 Create text file" << endl;
     result = createAndFillFile(inputFilename);
@@ -253,12 +248,12 @@ int main() {
 
     cout << "\n=== Test get number from file by index ===" << endl;
     cout << "1.3.4 Get number from text file by index" << endl;
-    result = getByIndex(inputFilename, pos);
-    if (result == -1) {
+    Result getResult = getByIndex(inputFilename, pos);
+    if (getResult.status == -1) {
         cout << "Error get text file" << endl;
         cout << "getByIndex returns -1" << endl;
     }
-    else cout << "getByIndex returns " << result << endl;
+    else cout << "getByIndex returns " << getResult.num << endl;
 
     cout << "\n=== Test get amount of numbers from file ===" << endl;
     cout << "1.3.5 Get amount of numbers from text file" << endl;
